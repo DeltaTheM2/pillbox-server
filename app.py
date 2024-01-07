@@ -11,15 +11,12 @@ db = firestore.client()
 
 @app.route('/update_firestore', methods=['POST'])
 def update_firestore():
-  data = request.json
-
-  collection_name = data['pills']
-  document_name = data['uid']
-  document_data = data['data']
-
-  db.collection(collection_name).document(document_name).set(document_data)
-
-  return "Data sent to Firestore", 200
+    if request.is_json:
+        data = request.get_json()
+        # Process the data
+        return "Data processed", 200
+    else:
+        return "Request Content-Type is not 'application/json'", 415
 
 
 
