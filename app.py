@@ -1,4 +1,5 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 
