@@ -11,14 +11,17 @@ db = firestore.client()
 
 @app.route('/update_firestore', methods=['POST'])
 def update_firestore():
-    if request.is_json:
-        data = request.get_json()
-        print(data)
-        # Process the data
-        return "Data processed", 200
-    else:
-        return "Request Content-Type is not 'application/json'", 415
+    # Get data as a plain string
+    data_string = request.data.decode('utf-8')
 
+    try:
+        # Attempt to parse the string as JSON
+        data = json.loads(data_string)
+        # Process the data
+        # (Add your Firestore updating logic here)
+        return jsonify({"status": "success", "message": "Data processed"}), 200
+    except json.JSONDecodeError:
+        return jsonify({"status": "error", "message": "Invalid JSON format"}), 400
 
 
 if __name__ == '__main__':
