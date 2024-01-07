@@ -9,8 +9,8 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-@app.route('/update_firestore', methods=['POST'])
-def update_firestore():
+@app.route('/update_firestore/<data>', methods=['POST'])
+def update_firestore(data):
   data = request.json
 
   collection_name = data['pills']
