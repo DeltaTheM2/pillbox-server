@@ -13,6 +13,7 @@ db = firestore.client()
 def update_firestore():
     if request.is_json:
         data = request.get_json()
+        print(data)
         # Process the data
         return "Data processed", 200
     else:
