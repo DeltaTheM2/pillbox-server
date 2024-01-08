@@ -9,24 +9,29 @@ cred = credentials.Certificate('serviceAccountKey.json')
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+collection = db.collection('pills')
 
 @app.route('/update_firestore', methods=['POST'])
 def update_firestore():
-    # Get data as a plain string
-    data_string = request.data.decode('utf-8')
+     data_string = request.data.decode('utf-8')
 
     try:
-        # Attempt to parse the string as JSON
         data = json.loads(data_string)
-        # Process the data
-        # (Add your Firestore updating logic here)
-        return jsonify({"status": "success", "message": "Data processed"}), 200
+
+        # Assuming 'uid' is a unique identifier for the document
+        uid = data.get('uid')
+        if not uid:
+            return jsonify({"status": "error", "message": "Missing uid"}), 400
+
+        # Access the 'pills' collection and update/create a document with the UID
+        doc_ref = db.collection('pills').document(uid)
+        doc_ref.set(data)
+
+        return jsonify({"status": "success", "message": "Data updated in Firestore"}), 200
     except json.JSONDecodeError:
         return jsonify({"status": "error", "message": "Invalid JSON format"}), 400
 
 
-if __name__ == '__main__':
-  app.run(debug=True)
 
 @app.route('/get_firestore', methods = ['GET'])
 def get_firestore():
@@ -46,3 +51,7 @@ def get_firestore():
 
   except Exception as e:
     return f"an error occured: {str(e)}", 500
+
+
+if __name__ == '__main__':
+  app.run(debug=True)
