@@ -19,7 +19,7 @@ def update_firestore():
         data = json.loads(data_string)
 
         document = collection.document("test")
-        document.set(data_string)
+        document.set(data)
         db.commit()
         # Access the 'pills' collection and update/create a document with the UID
         #db.collection('pills').add(data)
