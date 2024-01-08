@@ -8,7 +8,7 @@ app = Flask(__name__)
 cred = credentials.Certificate('serviceAccountKey.json')
 firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+db = firestore.firestore()
 collection = db.collection('pills')
 
 @app.route('/update_firestore', methods=['POST'])
@@ -18,9 +18,11 @@ def update_firestore():
      try:
         data = json.loads(data_string)
 
-        
+        document = collection.document("test")
+        document.set(data_string)
+        db.commit()
         # Access the 'pills' collection and update/create a document with the UID
-        db.collection('pills').add(data)
+        #db.collection('pills').add(data)
 
         return jsonify({"status": "success", "message": "Data updated in Firestore"}), 200
      except json.JSONDecodeError:
