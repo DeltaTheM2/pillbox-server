@@ -8,7 +8,7 @@ app = Flask(__name__)
 cred = credentials.Certificate('serviceAccountKey.json')
 firebase_admin.initialize_app(cred)
 
-db = firestore.firestore()
+db = firestore.client()
 collection = db.collection('pills')
 
 @app.route('/update_firestore', methods=['POST'])
