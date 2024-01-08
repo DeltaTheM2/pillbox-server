@@ -18,14 +18,9 @@ def update_firestore():
      try:
         data = json.loads(data_string)
 
-        # Assuming 'uid' is a unique identifier for the document
-        uid = data.get('uid')
-        if not uid:
-            return jsonify({"status": "error", "message": "Missing uid"}), 400
-
+        
         # Access the 'pills' collection and update/create a document with the UID
-        doc_ref = db.collection('pills').document(uid)
-        doc_ref.set(data)
+        db.collection('pills').add(data)
 
         return jsonify({"status": "success", "message": "Data updated in Firestore"}), 200
      except json.JSONDecodeError:
