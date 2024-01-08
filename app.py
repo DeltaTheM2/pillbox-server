@@ -15,7 +15,7 @@ collection = db.collection('pills')
 def update_firestore():
      data_string = request.data.decode('utf-8')
 
-    try:
+     try:
         data = json.loads(data_string)
 
         # Assuming 'uid' is a unique identifier for the document
@@ -28,7 +28,7 @@ def update_firestore():
         doc_ref.set(data)
 
         return jsonify({"status": "success", "message": "Data updated in Firestore"}), 200
-    except json.JSONDecodeError:
+     except json.JSONDecodeError:
         return jsonify({"status": "error", "message": "Invalid JSON format"}), 400
 
 
