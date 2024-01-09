@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
+import urllib
+from urllib import parse
 
 app = Flask(__name__)
 
@@ -11,22 +13,22 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 collection = db.collection('pills')
 
-@app.route('/update_firestore', methods=['POST'])
-def update_firestore():
-     data_string = request.data.decode('utf-8')
 
-     try:
-        data = json.loads(data_string)
 
-        document = collection.document("test")
-        document.set(data)
-        db.commit()
+@app.route('/update_firestore/<data>')
+def update_firestore(data):
+    try:
+        # if type(data) != dict:
+        #    encoded_data = urllib.parse.urlencode(data)
+        #    db.collection("pills").document().set(encoded_data)
+        # else:
+        db.collection("pills").document().set(dict(data))
         # Access the 'pills' collection and update/create a document with the UID
         #db.collection('pills').add(data)
 
-        return jsonify({"status": "success", "message": "Data updated in Firestore"}), 200
-     except json.JSONDecodeError:
-        return jsonify({"status": "error", "message": "Invalid JSON format"}), 400
+        return {"status": "success", "message": "Data updated in Firestore"}, 200
+    except json.JSONDecodeError:
+        return {"status": "error", "message": "Invalid JSON format"}, 400
 
 
 
@@ -48,7 +50,16 @@ def get_firestore():
 
   except Exception as e:
     return f"an error occured: {str(e)}", 500
-
-
+firebasedata = {
+      'med_count': 0,
+      'med_history': "2023-1-1T07:22Z",
+      'med_name': "somethingnewnew",
+      'reminder' : 0
+      }
+update_firestore(firebasedata)  
+print("data sent")
 if __name__ == '__main__':
   app.run(debug=True)
+
+
+  
