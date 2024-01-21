@@ -15,8 +15,8 @@ collection = db.collection('pills')
 
 
 
-@app.route('/update_firestore')
-def update_firestore(data):
+@app.route('/update_firestore', mothods=['POST'])
+def update_firestore():
     json_data = request.get_json()
     # if type(data) != dict:
     #    encoded_data = urllib.parse.urlencode(data)
