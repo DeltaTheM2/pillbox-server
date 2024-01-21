@@ -35,7 +35,7 @@ def update_firestore():
 @app.route('/get_firestore', methods = ['GET'])
 def get_firestore():
   collection_name = request.args.get('pills')
-  document_name = request.args.get('uid')
+  #document_name = request.args.get('uid')
 
   if not collection_name:
     return "Missing collection or document name ", 400
