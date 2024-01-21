@@ -26,10 +26,8 @@ def update_firestore(data):
     # Access the 'pills' collection and update/create a document with the UID
     #db.collection('pills').add(data)
 
-        return {"status": "success", "message": "Data updated in Firestore"}, 200
-    except json.JSONDecodeError:
-        return {"status": "error", "message": "Invalid JSON format"}, 400
-
+    return {"status": "success", "message": "Data updated in Firestore"}, 200
+    
 
 
 @app.route('/get_firestore', methods = ['GET'])
