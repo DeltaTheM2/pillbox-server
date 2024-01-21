@@ -15,7 +15,7 @@ collection = db.collection('pills')
 
 
 
-@app.route('/update_firestore/<data>')
+@app.route('/update_firestore')
 def update_firestore(data):
     json_data = request.get_json()
     # if type(data) != dict:
