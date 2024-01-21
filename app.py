@@ -17,14 +17,14 @@ collection = db.collection('pills')
 
 @app.route('/update_firestore/<data>')
 def update_firestore(data):
-    try:
-        # if type(data) != dict:
-        #    encoded_data = urllib.parse.urlencode(data)
-        #    db.collection("pills").document().set(encoded_data)
-        # else:
-        db.collection("pills").document().set(dict(data))
-        # Access the 'pills' collection and update/create a document with the UID
-        #db.collection('pills').add(data)
+    json_data = request.get_json()
+    # if type(data) != dict:
+    #    encoded_data = urllib.parse.urlencode(data)
+    #    db.collection("pills").document().set(encoded_data)
+    # else:
+    db.collection("pills").document().set(json_data)
+    # Access the 'pills' collection and update/create a document with the UID
+    #db.collection('pills').add(data)
 
         return {"status": "success", "message": "Data updated in Firestore"}, 200
     except json.JSONDecodeError:
