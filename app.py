@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, request, jsonify
 import json
 import firebase_admin
@@ -15,7 +16,7 @@ collection = db.collection('pills')
 
 
 
-@app.route('/update_firestore', mothods=['POST'])
+@app.route('/update_firestore', methods = ['POST'])
 def update_firestore():
     json_data = request.get_json()
     # if type(data) != dict:
@@ -26,7 +27,7 @@ def update_firestore():
     # Access the 'pills' collection and update/create a document with the UID
     #db.collection('pills').add(data)
 
-    #return {"status": "success", "message": "Data updated in Firestore"}, 200
+    return {"status": "success", "message": "Data updated in Firestore"}, 200
     
 
 
