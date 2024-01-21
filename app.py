@@ -55,7 +55,7 @@ firebasedata = {
       'med_name': "somethingnewnew",
       'reminder' : 0
       }
-update_firestore(firebasedata)  
+ 
 print("data sent")
 if __name__ == '__main__':
   app.run(debug=True)
