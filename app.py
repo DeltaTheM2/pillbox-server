@@ -27,7 +27,7 @@ def update_firestore():
 @app.route('/get_firestore', methods = ['GET'])
 def get_firestore():
   docs = db.collection("pills").stream()
-  return docs
+  return docs.to_dict()
      
   
   # collection_name = request.args.get('pills')
