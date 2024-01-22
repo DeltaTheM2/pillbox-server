@@ -20,36 +20,33 @@ collection = db.collection('pills')
 def update_firestore():
     print("Request Headers:", request.headers)
     json_data = request.get_json()
-    # if type(data) != dict:
-    #    encoded_data = urllib.parse.urlencode(data)
-    #    db.collection("pills").document().set(encoded_data)
-    # else:
     db.collection("pills").document().set(json_data)
-    # Access the 'pills' collection and update/create a document with the UID
-    #db.collection('pills').add(data)
-
     return {"status": "success", "message": "Data updated in Firestore"}, 200
     
 
 
 @app.route('/get_firestore', methods = ['GET'])
 def get_firestore():
-  collection_name = request.args.get('pills')
-  document_name = request.args.get('uid')
+  docs = db.collection("pills").stream()
+  return docs
+     
+  
+  # collection_name = request.args.get('pills')
+  # document_name = request.args.get('uid')
 
-  if not collection_name:
-    return "Missing collection or document name ", 400
+  # if not collection_name:
+  #   return "Missing collection or document name ", 400
 
-  try:
-    doc_ref = db.collection(collection_name)
-    doc = doc_ref.get()
-    if doc.exists:
-      return doc.to_dic(), 200
-    else:
-      return "Document not found", 404
+  # try:
+  #   doc_ref = db.collection(collection_name)
+  #   doc = doc_ref.get()
+  #   if doc.exists:
+  #     return doc.to_dic(), 200
+  #   else:
+  #     return "Document not found", 404
 
-  except Exception as e:
-    return f"an error occured: {str(e)}", 500
+  # except Exception as e:
+  #   return f"an error occured: {str(e)}", 500
 
 
 firebasedata = {
