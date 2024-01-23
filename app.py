@@ -40,7 +40,16 @@ def get_firestore():
 
   return docsToReturn
      
-  
+@app.route('/get_pill', methods = ['GET'])
+def get_pill(uid):
+  docs = db.collection("pills").stream('uid')
+  docsToReturn = []
+  for doc in docs:
+    print(f"{doc.id} => {doc.to_dict()}")
+    docsToReturn.append(doc.to_dict())
+
+  return docsToReturn
+       
   # collection_name = request.args.get('pills')
   # document_name = request.args.get('uid')
 
