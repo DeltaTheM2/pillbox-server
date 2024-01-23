@@ -22,7 +22,13 @@ def update_firestore():
     db.collection("pills").document().set(json_data)
     return {"status": "success", "message": "Data updated in Firestore"}, 200
     
-
+@app.route('/update_pill', methods = ['POST'])
+def update_pill():
+    print("Request Headers:", request.headers)
+    json_data = request.get_json()
+    db.collection("pills").document("uid").set(json_data)
+    return {"status": "success", "message": "Data updated in Firestore"}, 200
+    
 
 @app.route('/get_firestore', methods = ['GET'])
 def get_firestore():
