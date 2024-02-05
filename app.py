@@ -51,31 +51,8 @@ def get_pill(uid):
     docsToReturn.append(doc.to_dict())
 
   return docsToReturn
-       
-  # collection_name = request.args.get('pills')
-  # document_name = request.args.get('uid')
-
-  # if not collection_name:
-  #   return "Missing collection or document name ", 400
-
-  # try:
-  #   doc_ref = db.collection(collection_name)
-  #   doc = doc_ref.get()
-  #   if doc.exists:
-  #     return doc.to_dic(), 200
-  #   else:
-  #     return "Document not found", 404
-
-  # except Exception as e:
-  #   return f"an error occured: {str(e)}", 500
 
 
-firebasedata = {
-      'med_count': 0,
-      'med_history': "2023-1-1T07:22Z",
-      'med_name': "somethingnewnew",
-      'reminder' : 0
-      }
  
 print("data sent")
 if __name__ == '__main__':
