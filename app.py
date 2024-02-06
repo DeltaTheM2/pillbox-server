@@ -17,7 +17,7 @@ collection = db.collection('pills')
 
 @app.route('/update_firestore', methods = ['POST'])
 def update_firestore():
-    #print("Request Headers:", request.headers)
+    print("Request Headers:", request.headers)
     json_data = request.get_json()
     db.collection("pills").document().set(json_data)
     return {"status": "success", "message": "Data updated in Firestore"}, 200
