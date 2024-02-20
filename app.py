@@ -1,10 +1,7 @@
-from tkinter import Image
 from flask import Flask, request, jsonify, send_file
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
-import urllib
-from urllib import parse
 import segno 
 from PIL import Pillow, Image
 from sklearn.preprocessing import scale
