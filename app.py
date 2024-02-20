@@ -1,18 +1,38 @@
-from flask import Flask, request, jsonify
+from tkinter import Image
+from flask import Flask, request, jsonify, send_file
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 import urllib
 from urllib import parse
-
+import segno 
+from PIL import Pillow, Image
+from sklearn.preprocessing import scale
+ 
 app = Flask(__name__)
-
 cred = credentials.Certificate('serviceAccountKey.json')
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 collection = db.collection('pills')
 
+
+@app.route('/register_device/<device_id>', methods=["GET"])
+def register_device(device_id):
+   png_filename = f"{device_id}.png"
+   bmp_filename = f"{device_id}.bmp"
+   qrcode = segno.make_qr(device_id)
+   qrcode.save(png_filename, scale = 5)
+   convert_to_bmp(png_filename, bmp_filename)
+   #user_ref = db.collections('devices')
+   return send_file(bmp_filename, mimetype='image/bmp')
+
+
+
+def convert_to_bmp(png_filename, bmp_filename):
+   with Image.open(png_filename) as img:
+      img.save(bmp_filename)
+   
 
 
 @app.route('/update_firestore', methods = ['POST'])
