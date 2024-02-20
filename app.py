@@ -3,7 +3,7 @@ import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 import segno 
-from PIL import Pillow, Image
+from PIL import Image
 from sklearn.preprocessing import scale
  
 app = Flask(__name__)
