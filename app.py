@@ -15,12 +15,14 @@ collection = db.collection('pills')
 
 @app.route('/register_device/<device_id>', methods=["GET"])
 def register_device(device_id):
+   print("image requested")
    png_filename = f"{device_id}.png"
    bmp_filename = f"{device_id}.bmp"
    qrcode = segno.make_qr(device_id)
    qrcode.save(png_filename, scale = 5)
    convert_to_bmp(png_filename, bmp_filename)
    #user_ref = db.collections('devices')
+   print("File generated!")
    return send_file(bmp_filename, mimetype='image/bmp')
 
 
