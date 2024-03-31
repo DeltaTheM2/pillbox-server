@@ -25,13 +25,13 @@ def register_device(device_id):
    print("File generated!")
    return send_file(bmp_filename, mimetype='image/bmp')
 
-@app.route('/isRegistered', methods=["GET"])
+@app.route('/isRegistered/<device_id>', methods=["GET"])
 def isRegistered(device_id):
     doc_ref = db.collection('users').document().get('device_id')
     for user in doc_ref:
         if user.get('device_id') == device_id:
-            return json.dumps(True)
-    return json.dumps(False)
+            return True
+    return False
 
 def convert_to_bmp(png_filename, bmp_filename):
    with Image.open(png_filename) as img:
