@@ -30,8 +30,8 @@ def isRegistered(device_id):
     doc_ref = db.collection('users').document()
     for user in doc_ref:
         if user.get('device_id') == device_id:
-            return user.get('uid')
-    return None
+            return True
+    return False
 
 def convert_to_bmp(png_filename, bmp_filename):
    with Image.open(png_filename) as img:
