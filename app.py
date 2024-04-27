@@ -63,7 +63,20 @@ def get_firestore():
     docsToReturn.append(doc.to_dict())
 
   return docsToReturn
-     
+
+
+#Method to send notification.
+@app.route('/send_pill_notification', methods = ['POST'])
+def send_notification():
+     docs = db.collection("pills").stream('uid')
+     notificationList = []
+     for doc in docs:
+         print(f"{doc.id} => {doc.to_dict()}")
+         if doc.get('med_history')[0] % 3600 < 1800:
+             #call the custom firebase method here
+             notificationList.append(f"time to take {doc.get('med_name')} in 30 minutes!")
+
+
 @app.route('/get_pill', methods = ['GET'])
 def get_pill(uid):
   docs = db.collection("pills").stream('uid')
