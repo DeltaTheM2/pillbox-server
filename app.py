@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 import json
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, firestore, messaging
 import segno 
 from PIL import Image
  
@@ -65,16 +65,37 @@ def get_firestore():
   return docsToReturn
 
 
-#Method to send notification.
+#Get Device ID
+String deviceID = ""
+doc_ref = db.collection('users').document()
+    for user in doc_ref:
+        if user.get('device_id') == device_id:
+           deviceID = device_id
+         
 @app.route('/send_pill_notification', methods = ['POST'])
-def send_notification():
-     docs = db.collection("pills").stream('uid')
-     notificationList = []
-     for doc in docs:
-         print(f"{doc.id} => {doc.to_dict()}")
-         if doc.get('med_history')[0] % 3600 < 1800:
+def send_notification(token, title, body):
+    # See documentation for more options
+    message = messaging.Message(
+        notification=messaging.Notification(
+            title=title,
+            body=body,
+        ),
+        token=token
+    )
+    # Send the message
+    response = messaging.send(message)
+    return response
+ 
+ response = send_notification(deviceID, 'Hello', 'This is a test message')
+ print('Successfully sent message:', response)
+
+     #docs = db.collection("pills").stream('uid')
+    # notificationList = []
+    #for doc in docs:
+     #    print(f"{doc.id} => {doc.to_dict()}")
+     #    if doc.get('med_history')[0] % 3600 < 1800:
              #call the custom firebase method here
-             notificationList.append(f"time to take {doc.get('med_name')} in 30 minutes!")
+        #     notificationList.append(f"time to take {doc.get('med_name')} in 30 minutes!")
 
 
 @app.route('/get_pill', methods = ['GET'])
