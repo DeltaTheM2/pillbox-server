@@ -4,6 +4,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore, messaging
 import segno 
 from PIL import Image
+import time
  
 app = Flask(__name__)
 cred = credentials.Certificate('serviceAccountKey.json')
@@ -65,39 +66,29 @@ def get_firestore():
   return docsToReturn
 
 
-#Get Device ID
-String deviceID = ""
-doc_ref = db.collection('users').document()
-    for user in doc_ref:
-        if user.get('device_id') == device_id:
-           deviceID = device_id
-         
-@app.route('/send_pill_notification', methods = ['POST'])
-def send_notification(token, title, body):
-    # See documentation for more options
-    message = messaging.Message(
-        notification=messaging.Notification(
-            title=title,
-            body=body,
-        ),
-        token=token
-    )
-    # Send the message
-    response = messaging.send(message)
-    return response
- 
- response = send_notification(deviceID, 'Hello', 'This is a test message')
- print('Successfully sent message:', response)
+@app.route('/fetch_notification/<device_id>', methods=['GET'])
+def fetch_notification(device_id):
+    # Get the current time to compare with notification timestamps
+    current_time = int(time.time())
 
-     #docs = db.collection("pills").stream('uid')
-    # notificationList = []
-    #for doc in docs:
-     #    print(f"{doc.id} => {doc.to_dict()}")
-     #    if doc.get('med_history')[0] % 3600 < 1800:
-             #call the custom firebase method here
-        #     notificationList.append(f"time to take {doc.get('med_name')} in 30 minutes!")
+    # Reference to the notification collection filtered by not yet sent notifications
+    notifications_ref = db.collection('ff_push_notifications').where('num_sent', '==', 0)
+    notifications = notifications_ref.stream()
 
+    for notification in notifications:
+        notif_data = notification.to_dict()
+        # Check if the notification is pending based on timestamp and if it's meant for all devices or a specific one
+        if notif_data['timestamp'] <= current_time and (
+                notif_data['target_audience'] == 'All' or notif_data['target_audience'] == device_id):
+            # Update the notification as sent
+            db.collection('ff_push_notifications').document(notification.id).update({'num_sent': 1})
+            # Return the notification details
+            return jsonify({
+                'notification_text': notif_data['notification_text'],
+                'notification_title': notif_data['notification_title']
+            }), 200
 
+    return jsonify({'message': 'No pending notifications'}), 200
 @app.route('/get_pill', methods = ['GET'])
 def get_pill(uid):
   docs = db.collection("pills").stream('uid')
