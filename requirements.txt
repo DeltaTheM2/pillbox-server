@@ -3,4 +3,3 @@ firebase-admin
 Gunicorn
 segno           
 Pillow
-time
