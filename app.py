@@ -91,6 +91,30 @@ def get_pill(uid):
 
   return docsToReturn
 
+@app.route('/get_pills_for_device/<device_id>', methods=['GET'])
+def get_pills_for_device(device_id):
+    try:
+        # First, find the user associated with this device ID
+        user_ref = db.collection('users').where('device_id', '==', device_id).limit(1)
+        users = user_ref.stream()
+        user_id = None
+        for user in users:
+            user_data = user.to_dict()
+            user_id = user.id  # Assuming there's an id field or use user.id if the document ID is the user ID
+            break
+
+        if not user_id:
+            return jsonify({'error': 'User not found for the given device ID'}), 404
+
+        # Now, fetch all pills associated with this user ID
+        pills_ref = db.collection('pills').where('owner', '==', user_id)
+        pills = pills_ref.stream()
+        pills_data = [{'med_name': pill.to_dict()['med_name'], 'med_count': pill.to_dict().get('med_count', 0)} for pill in pills]
+
+        return jsonify(pills_data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 print("data sent")
 if __name__ == '__main__':
   app.run(debug=True)
