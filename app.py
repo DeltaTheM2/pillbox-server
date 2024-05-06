@@ -68,26 +68,18 @@ def get_firestore():
 
 @app.route('/fetch_notification/<device_id>', methods=['GET'])
 def fetch_notification(device_id):
-    # Get the current time to compare with notification timestamps
     current_time = int(time.time())
-
-    # Reference to the notification collection filtered by not yet sent notifications
-    notifications_ref = db.collection('ff_push_notifications').where('num_sent', '==', 0)
-    notifications = notifications_ref.stream()
-
-    for notification in notifications:
-        notif_data = notification.to_dict()
-        # Check if the notification is pending based on timestamp and if it's meant for all devices or a specific one
-        if notif_data['timestamp'] <= current_time and (
-                notif_data['target_audience'] == 'All' or notif_data['target_audience'] == device_id):
-            # Update the notification as sent
-            db.collection('ff_push_notifications').document(notification.id).update({'num_sent': 1})
-            # Return the notification details
-            return jsonify({
-                'notification_text': notif_data['notification_text'],
-                'notification_title': notif_data['notification_title']
-            }), 200
-
+    pills_ref = db.collection('pills').where('owner', '==', device_id)
+    for pill in pills_ref.stream():
+        pill_data = pill.to_dict()
+        last_taken_time = max(pill_data['med_history']) if pill_data['med_history'] else None
+        if last_taken_time:
+            next_dose_time = last_taken_time + (pill_data['reminder'] * 3600)
+            if next_dose_time - 1800 <= current_time <= next_dose_time:
+                return jsonify({
+                    'notification_text': f'Time to take your {pill_data["med_name"]} soon.',
+                    'time': str(next_dose_time)
+                }), 200
     return jsonify({'message': 'No pending notifications'}), 200
 @app.route('/get_pill', methods = ['GET'])
 def get_pill(uid):
